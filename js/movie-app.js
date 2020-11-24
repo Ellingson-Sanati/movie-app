@@ -21,7 +21,7 @@ $(document).ready(function (){
 
     const movieHtml = (movie) => {
         let html = `<li><p>${movie.title}</p>
-    <p>${movie.rating}</p><img src="${movie.poster}"></li> `
+    <p>${movie.rating}</p><img src="${movie.poster}"<button id="edit-movie-btn">Edit</button></li> `
         return html
     }
 
@@ -84,10 +84,46 @@ $(document).ready(function (){
 
 //On submit event.preventDefault
 
+
+const editMovieForm = movie => {
+        let html = `<div>
+    <form class="edit-movie">
+        <div class="form-group">
+            <label for="edit-movie-title">Movie Title</label>
+            <input type="text" class="form-control" id="edit-movie-title">
+        </div>
+        <div class="form-group">
+            <label for="edit-movie-rating">Movie Rating</label>
+            <!--            <input type="text" class="form-control" id="create-movie-rating">-->
+            <select class="form-control form-control-sm" id="edit-movie-rating">
+                <option value="1">1 (This movie was terrible!) </option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5 (I could watch this over and over!)</option>
+            </select>
+        </div>
+        <button id="edit-movie-submit" type="submit" class="btn btn-primary">Edit Movie</button>
+    </form>
+</div>`
+    return html
+}
+
+$('body').on('click', '#edit-movie-btn', function (e){
+
+    $(this).append(editMovieForm(movie))
+})
+
 //****Section 4
 
 //Next to Edit movie button - have a Delete movie button
 
 //Delete request send to /movies to delete that specific movie
+
+
+
+
+
+
 
 });
