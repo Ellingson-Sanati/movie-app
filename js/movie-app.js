@@ -1,31 +1,6 @@
 $(document).ready(function (){
-    fetch('https://even-ripple-allium.glitch.me/movies')
-        response.json().then(response => )
-        .then(response => {
-            console.log(response)
-            let movieList = movieListHtml(response)
-            console.log(movieList)
-            // $("h1").append(movieListHtml(response))
-        });
 
-});
-
-const movieHtml = (movie) => {
-    let html = `<li><p>${movie.title}</p>
-    <p>${movie.rating}</p><img src="${movie.poster}"></li> `
-return html
-}
-
-
-const movieListHtml = (movieList) => {
-
-    let html = "<ul>"
-    movieList.forEach(movie => {
-        html += movieHtml(movie)
-    })
-    html += "</ul>"
-}
-//Fetch movies endpoint. Log results
+    //Fetch movies endpoint. Log results
 
 
 //****Section 1
@@ -35,10 +10,29 @@ const movieListHtml = (movieList) => {
 
 //Append to the DOM
 
+    fetch('https://even-ripple-allium.glitch.me/movies')
+        .then(response => response.json())
+        .then(response => {
+            console.log(response)
+            let movieList = movieListHtml(response)
+            console.log(movieList)
+            $("h1").html(movieListHtml(response))
+        });
 
+    const movieHtml = (movie) => {
+        let html = `<li><p>${movie.title}</p>
+    <p>${movie.rating}</p><img src="${movie.poster}"></li> `
+        return html
+    }
 
-
-
+    const movieListHtml = (movieList) => {
+        let html = "<ul>"
+        movieList.forEach(movie => {
+            html += movieHtml(movie)
+        })
+        html += "</ul>"
+        return html
+    }
 
 
 //***Section 2
@@ -48,6 +42,38 @@ const movieListHtml = (movieList) => {
 //On submit event.preventDefault
 
     //Instead- make a post request to/movies in the request.body - include title, rating
+
+
+
+
+
+
+    $('body').on('click', 'add-movie-submit', function(e) {
+        e.preventDefault();
+        createNewMovieObj();
+    })
+
+    const createNewMovieObj = () => {
+        const newMovieObj = {
+            name: $('#create-movie-title').val(),
+            rating: $('#create-movie-rating').val()
+        };
+        const url = 'https://even-ripple-allium.glitch.me/movies';
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newMovieObj),
+        };
+        fetch(url, options)
+            .then(response =>
+                //ADD FUNCTION TO CREATE HTML/VALIDATION MESSAGE STATING MOVIE WAS ADDED
+                console.log(response.json())) /* movie was added successfully */
+            .catch(error => console.error(error)); /* handle errors */
+    }
+
+
 
 
 //****Section 3
@@ -63,3 +89,5 @@ const movieListHtml = (movieList) => {
 //Next to Edit movie button - have a Delete movie button
 
 //Delete request send to /movies to delete that specific movie
+
+});
