@@ -15,19 +15,19 @@ $(document).ready(function (){
         .then(response => {
             console.log(response)
             let movieList = movieListHtml(response)
-            console.log(movieList)
             $("h1").html(movieListHtml(response))
         });
 
     const movieHtml = (movie) => {
-        let html = `<li class="col-4 mb-3"><div class="card" style="width: 18rem;">
-  <img src="${movie.poster}" class="card-img-top poster">
-  <div class="card-body text-center">
-    
-    <h2 class="card-title text-uppercase">${movie.title}</h2>
-    <h5 class="mb-3">User Rating: ${movie.rating}</h5><button id="edit-movie-btn">Edit</button>
-  </div>
-</div></li> `
+        let html = `<li class="col-4 mb-3">
+                        <div class="card" style="width: 18rem;">
+                            <img src="${movie.poster}" class="card-img-top poster">
+                            <div class="card-body text-center">
+                                <h2 id= "${movie.title}" class="card-title text-uppercase">${movie.title}</h2>
+                                <h5 class="mb-3">User Rating: ${movie.rating}</h5><button id="edit-movie-btn">Edit</button>
+                            </div>
+                        </div>
+                    </li>`
         return html
     }
 
@@ -96,15 +96,14 @@ $(document).ready(function (){
 
 const editMovieForm = movie => {
         let html = `<div>
-    <form class="edit-movie">
+    <form id="${movie.name}" class="edit-movie">
         <div class="form-group">
             <label for="edit-movie-title">Movie Title</label>
-            <input type="text" class="form-control" id="edit-movie-title">
+            <input type="text" class="form-control" id="edit-movie-title" value="${movie.name}">
         </div>
         <div class="form-group">
             <label for="edit-movie-rating">Movie Rating</label>
-            <!--            <input type="text" class="form-control" id="create-movie-rating">-->
-            <select class="form-control form-control-sm" id="edit-movie-rating">
+            <select class="form-control form-control-sm" id="edit-movie-rating" value="${movie.rating}">
                 <option value="1">1 (This movie was terrible!) </option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -118,10 +117,69 @@ const editMovieForm = movie => {
     return html
 }
 
-$('body').on('click', '#edit-movie-btn', function (e){
 
-    $(this).append(editMovieForm(movie))
+//EDIT MOVIE button handler
+$('body').on('click', '#edit-movie-btn', function (e){
+    const oldMovieObj = {
+        name: $(this).parent().children().html(),
+        rating: $(this).parent().children().next().html()
+    }
+    const newMovieObj = {};
+    fetch('https://even-ripple-allium.glitch.me/movies')
+        .then(function(response) {
+            console.log(oldMovieObj);
+            response.json()
+        })
+        .then(function(response) {
+            console.log(oldMovieObj);
+            let movieList = movieListHtml(response)
+            $("h1").html(movieListHtml(response))
+        });
+    $(this).parent().replaceWith(editMovieForm(oldMovieObj))
 })
+
+    const editMovieObj = function(e) {
+        console.log(e.target);
+        let movieNameMatcher = e.target.parentElement.parentElement.parentElement.children[1].children[0].id;
+        let updatedMovie;
+        let updatedMovieID = '';
+        fetch('https://even-ripple-allium.glitch.me/movies')
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
+
+                updatedMovie = response.filter(movie =>
+                    movie.title === movieNameMatcher
+                )
+                updatedMovie = updatedMovie[0];
+                console.log(updatedMovie);
+                updatedMovie.title = $('#edit-movie-title').val();
+                updatedMovie.rating = $('#edit-movie-rating').val();
+                updatedMovieID = updatedMovie.id;
+                const url = `https://even-ripple-allium.glitch.me/movies/${updatedMovieID}`;
+                const options = {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedMovie),
+                };
+                fetch(url, options)
+                    .then(response =>
+                        //ADD FUNCTION TO CREATE HTML/VALIDATION MESSAGE STATING MOVIE WAS ADDED
+                        console.log(response.json())) /* movie was added successfully */
+                    .catch(error => console.error(error)); /* handle errors */
+            })
+
+    }
+
+//EDIT MOVIE submit handler
+$('body').on('click', '#edit-movie-submit', function(e) {
+    e.preventDefault();
+    editMovieObj(e);
+})
+
+
 
 //****Section 4
 
