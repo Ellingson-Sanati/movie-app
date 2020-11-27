@@ -20,13 +20,22 @@ $(document).ready(function (){
         });
 
     const movieHtml = (movie) => {
-        let html = `<li><p>${movie.title}</p>
-    <p>${movie.rating}</p><img src="${movie.poster}"<button id="edit-movie-btn">Edit</button></li> `
+        let html = `<li class="col-4 mb-3"><div class="card" style="width: 18rem;">
+  <img src="${movie.poster}" class="card-img-top poster">
+  <div class="card-body text-center">
+    
+    <h2 class="card-title text-uppercase">${movie.title}</h2>
+    <h5 class="mb-3">User Rating: ${movie.rating}</h5><button id="edit-movie-btn">Edit</button>
+  </div>
+</div></li> `
         return html
     }
 
+
+
+
     const movieListHtml = (movieList) => {
-        let html = "<ul>"
+        let html = "<ul class='row list-unstyled'>"
         movieList.forEach(movie => {
             html += movieHtml(movie)
         })
