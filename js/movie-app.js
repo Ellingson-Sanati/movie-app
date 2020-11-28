@@ -24,7 +24,9 @@ $(document).ready(function (){
                             <img src="${movie.poster}" class="card-img-top poster">
                             <div class="card-body text-center">
                                 <h2 id= "${movie.title}" class="card-title text-uppercase">${movie.title}</h2>
-                                <h5 class="mb-3">User Rating: ${movie.rating}</h5><button id="edit-movie-btn">Edit</button>
+                                <h5 class="mb-3">User Rating: ${movie.rating}</h5>
+                                <button id="edit-movie-btn">Edit</button>
+                                <button id="delete-movie-btn">Delete</button>
                             </div>
                         </div>
                     </li>`
@@ -188,7 +190,42 @@ $('body').on('click', '#edit-movie-submit', function(e) {
 //Delete request send to /movies to delete that specific movie
 
 
+    $('body').on('click', '#delete-movie-btn', function (e){
 
+        console.log(e.target);
+        let movieNameMatcher = e.target.parentElement.parentElement.children[1].children[0].id;
+        let deleteMovie;
+        let deleteMovieID = '';
+        let movieCard = $(this).parent().parent().parent()[0];
+        fetch('https://even-ripple-allium.glitch.me/movies')
+            .then(response => response.json())
+            .then(response => {
+
+                console.log(response)
+
+                deleteMovie = response.filter(movie =>
+                    movie.title == movieNameMatcher
+                )
+                deleteMovie = deleteMovie[0];
+                console.log(deleteMovie);
+                deleteMovieID = deleteMovie.id;
+                const url = `https://even-ripple-allium.glitch.me/movies/${deleteMovieID}`;
+                const options = {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+
+                };
+                fetch(url, options)
+                    .then(response => {
+                        //ADD FUNCTION TO CREATE HTML/VALIDATION MESSAGE STATING MOVIE WAS ADDED
+                        console.log(response.json())
+                        $(movieCard).remove()
+                        /* movie was added successfully */
+                    }).catch(error => console.error(error)); /* handle errors */
+            })
+    })
 
 
 
