@@ -1,6 +1,36 @@
 .poster{
-    /*width: auto !important;*/
-    max-height: 300px !important;
+    width: auto;
+    height: 400px;
 
 }
 
+
+body{
+    background: lightgray;
+}
+
+.card {
+    background: gray;
+    border: 3px;
+
+}
+
+.navbar{
+    height: 100px;
+    width: auto;
+    /*padding: 1em;*/
+    font-size: large;
+}
+
+.navbar-brand{
+    margin: auto;
+    color: white !important;
+    font-size: large;
+    padding: 1em;
+}
+
+.nav-link{
+    color: white !important;
+    margin: auto;
+    padding: 1em !important;
+}
