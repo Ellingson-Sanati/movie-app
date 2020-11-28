@@ -19,7 +19,7 @@ $(document).ready(function (){
         });
 
     const movieHtml = (movie) => {
-        let html = `<li class="col-4 mb-3">
+        let html = `<li class="col-xs-12 col-md-6 col-lg-4  mb-3">
                         <div class="card" style="width: 18rem;">
                             <img src="${movie.poster}" class="card-img-top poster">
                             <div class="card-body text-center">
