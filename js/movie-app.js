@@ -1,14 +1,8 @@
 $(document).ready(function (){
 
-    //Fetch movies endpoint. Log results
-
-
-//****Section 1
-//Use a document.ready Hardcode loading... to html file
-
-//AJAX REQUEST to get a listing of the movies
-
-//Append to the DOM
+    //****Section 1
+    //AJAX REQUEST to get a listing of the movies
+    //Append to the DOM
 
     fetch('https://even-ripple-allium.glitch.me/movies')
         .then(response => response.json())
@@ -25,36 +19,28 @@ $(document).ready(function (){
                                 <h2 id= "${movie.title}" class="card-title text-uppercase">${movie.title}</h2>
                                 <h5><strong>Genre:</strong> ${movie.genre}</h5>
                                 <h5 class="mb-3">User Rating: ${movie.rating}</h5>
-                                <button id="edit-movie-btn">Edit</button>
-                                <button id="delete-movie-btn">Delete</button>
+                                <button id="edit-movie-btn" class="btn btn-primary">Edit</button>
+                                <button id="delete-movie-btn" class="btn">Delete</button>
                             </div>
                         </div>
                     </li>`
         return html
     }
 
-
-
-
+    //loop through movie list, append add movie button and sort select above list
     const movieListHtml = (movieList) => {
-        let html = addMovieForm()
-        html += "<ul class='row list-unstyled'>";
+        let html = addMovieForm() + addSortHTML();
+        html += "<ul id='movie-card-list'class='row list-unstyled'>";
         (typeof movieList == 'object') ?
-        movieList.forEach(movie => {html += movieHtml(movie)})
+        movieList.forEach(movie => html += movieHtml(movie))
             :
             html += movieHtml(movieList)
         html += "</ul>"
         return html
     }
 
-
-//***Section 2
-
-//Create/Post to add new movies -Make an html form
-            //title, rating
-//On submit event.preventDefault
-
-    //Instead- make a post request to/movies in the request.body - include title, rating
+    //***Section 2
+    //Create/Post to add new movies
 
     const addMovieForm = movie => {
         let html = `<button id="add-movie-btn" type="submit" class="btn btn-primary mb-3">Add Movie</button>
@@ -86,13 +72,11 @@ $(document).ready(function (){
         return html
     }
 
-
-$('body').on('click', '#add-movie-btn', function (e){
-    e.preventDefault();
-    $('#add-movie-btn').hide()
-    $('#add-movie-div').show()
-
-})
+    $('body').on('click', '#add-movie-btn', function (e){
+        e.preventDefault();
+        $('#add-movie-btn').hide()
+        $('#add-movie-div').show()
+    })
 
     $('body').on('click', '#add-movie-submit', function(e) {
         e.preventDefault();
@@ -105,7 +89,6 @@ $('body').on('click', '#add-movie-btn', function (e){
         e.preventDefault();
         $('#add-movie-btn').show()
         $('#add-movie-div').hide()
-
     })
 
     const createNewMovieObj = () => {
@@ -145,98 +128,92 @@ $('body').on('click', '#add-movie-btn', function (e){
 
 
 
-//****Section 3
+    //****Section 3
+    //Option to edit movies- Create button which brings up form
+    //Form should have movies info pre-populated
 
-//Option to edit movies- Create button which brings up form
-
-//Form should have movies info pre-populated
-
-//On submit event.preventDefault
-
-
-const editMovieForm = movie => {
-        let html = `<div class="movie-div">
-    <form id="${movie.name}" class="edit-movie">
-        <div class="form-group">
-            <label for="edit-movie-title">Movie Title</label>
-            <input type="text" class="form-control" id="edit-movie-title" value="${movie.name}">
-        </div>
-        <div class="form-group">
-            <label for="edit-movie-genre">Movie Genre</label>
-            <input type="text" class="form-control" id="edit-movie-genre" value="${movie.genre}">
-        </div>
-        <div class="form-group">
-            <label for="edit-movie-rating">Movie Rating</label>
-            <select class="form-control form-control-sm" id="edit-movie-rating" value="${movie.rating}">
-                <option class="rating" id="rating-1" value="1">1 (This movie was terrible!) </option>
-                <option class="rating" id="rating-2" value="2">2</option>
-                <option class="rating" id="rating-3" value="3">3</option>
-                <option class="rating" id="rating-4" value="4">4</option>
-                <option class="rating" id="rating-5" value="5">5 (I could watch this over and over!)</option>
-            </select>
-        </div>
-        <button id="edit-movie-submit" type="submit" class="btn btn-primary">Edit Movie</button>
-        <button id="edit-movie-cancel" type="submit" class="btn btn-danger">Cancel Edit</button>
-    </form>
-</div>`
-    return html
-}
-
-
-//EDIT MOVIE button handler
-$('body').on('click', '#edit-movie-btn', function (e){
-    //check if another edit form is currently open, close if it is before continuing
-    if ($('div.movie-div').length) {
-        $('div.movie-div').each( function(index, element) {
-            console.log(element)
-            let movieNameMatcher = element.children[0].children[0].children[1].value
-            let movieCard = element.parentElement
-            var updatedMovieID;
-            fetch('https://even-ripple-allium.glitch.me/movies')
-                .then(response => response.json())
-                .then(response => {
-                    let updatedMovie = response.filter(movie =>
-                        movie.title == movieNameMatcher
-                    )
-                    updatedMovie = updatedMovie[0];
-                    updatedMovie.title = $('#edit-movie-title').val();
-                    updatedMovie.genre = $('#edit-movie-genre').val();
-                    updatedMovie.rating = $('#edit-movie-rating').val();
-                    updatedMovieID = updatedMovie.id
-                }).then( response => fetch(`https://even-ripple-allium.glitch.me/movies/${updatedMovieID}`))
-                .then(response => response.json())
-                .then(response => {
-                    $(movieCard).replaceWith(movieHtml(response));
-                })
-        })
+    const editMovieForm = movie => {
+            let html = `<div class="movie-div">
+        <form id="${movie.name}" class="edit-movie">
+            <div class="form-group">
+                <label for="edit-movie-title">Movie Title</label>
+                <input type="text" class="form-control" id="edit-movie-title" value="${movie.name}">
+            </div>
+            <div class="form-group">
+                <label for="edit-movie-genre">Movie Genre</label>
+                <input type="text" class="form-control" id="edit-movie-genre" value="${movie.genre}">
+            </div>
+            <div class="form-group">
+                <label for="edit-movie-rating">Movie Rating</label>
+                <select class="form-control form-control-sm" id="edit-movie-rating" value="${movie.rating}">
+                    <option class="rating" id="rating-1" value="1">1 (This movie was terrible!) </option>
+                    <option class="rating" id="rating-2" value="2">2</option>
+                    <option class="rating" id="rating-3" value="3">3</option>
+                    <option class="rating" id="rating-4" value="4">4</option>
+                    <option class="rating" id="rating-5" value="5">5 (I could watch this over and over!)</option>
+                </select>
+            </div>
+            <button id="edit-movie-submit" type="submit" class="btn btn-primary">Edit Movie</button>
+            <button id="edit-movie-cancel" type="submit" class="btn btn-danger">Cancel Edit</button>
+        </form>
+    </div>`
+        return html
     }
-    //
-    $(this).attr("disabled", "disabled");
-    const oldMovieObj = {
-        name: $(this).parent().children().html(),
-        genre: $(this).parent().children().next().html().slice(24),
-        rating: $(this).parent().children().next().next().html()
-    }
-    const getMovieRating = Number(oldMovieObj.rating.charAt(oldMovieObj.rating.length-1));
-    const newMovieObj = {};
-    fetch('https://even-ripple-allium.glitch.me/movies')
-        .then(response =>
-            response.json()
-        )
-        .then(function(response) {
-            console.log(response);
-            $('.rating').each( function(index, element) {
-                // console.log(element)
-                // console.log(index);
-                if (getMovieRating == $(element).attr('value')) {
-                    console.log("success");
-                    $(element).attr("selected", "selected");
-                }
+
+
+    //EDIT MOVIE button handler
+    $('body').on('click', '#edit-movie-btn', function (e){
+        //check if another edit form is currently open, close if it is before continuing
+        if ($('div.movie-div').length) {
+            $('div.movie-div').each( function(index, element) {
+                console.log(element)
+                let movieNameMatcher = element.children[0].children[0].children[1].value
+                let movieCard = element.parentElement
+                var updatedMovieID;
+                fetch('https://even-ripple-allium.glitch.me/movies')
+                    .then(response => response.json())
+                    .then(response => {
+                        let updatedMovie = response.filter(movie =>
+                            movie.title == movieNameMatcher
+                        )
+                        updatedMovie = updatedMovie[0];
+                        updatedMovie.title = $('#edit-movie-title').val();
+                        updatedMovie.genre = $('#edit-movie-genre').val();
+                        updatedMovie.rating = $('#edit-movie-rating').val();
+                        updatedMovieID = updatedMovie.id
+                    }).then( response => fetch(`https://even-ripple-allium.glitch.me/movies/${updatedMovieID}`))
+                    .then(response => response.json())
+                    .then(response => {
+                        $(movieCard).replaceWith(movieHtml(response));
+                    })
             })
-        });
-    $(this).attr("disabled", "");
-    $(this).parent().replaceWith(editMovieForm(oldMovieObj))
-})
+        }
+        $(this).attr("disabled", "disabled");
+        const oldMovieObj = {
+            name: $(this).parent().children().html(),
+            genre: $(this).parent().children().next().html().slice(24),
+            rating: $(this).parent().children().next().next().html()
+        }
+        const getMovieRating = Number(oldMovieObj.rating.charAt(oldMovieObj.rating.length-1));
+        const newMovieObj = {};
+        fetch('https://even-ripple-allium.glitch.me/movies')
+            .then(response =>
+                response.json()
+            )
+            .then(function(response) {
+                console.log(response);
+                $('.rating').each( function(index, element) {
+                    // console.log(element)
+                    // console.log(index);
+                    if (getMovieRating == $(element).attr('value')) {
+                        console.log("success");
+                        $(element).attr("selected", "selected");
+                    }
+                })
+            });
+        $(this).attr("disabled", "");
+        $(this).parent().replaceWith(editMovieForm(oldMovieObj))
+    })
 
     const editMovieObj = function(e) {
         let movieNameMatcher = e.target.parentElement.parentElement.parentElement.children[1].children[0].id;
@@ -328,7 +305,7 @@ $('body').on('click', '#edit-movie-submit', function(e) {
                         </div>
                         <div class="modal-body">
                             <p>Are you sure you want to delete this movie?</p>
-                            <button id="delete-movie-submit" type="submit" class="btn btn-primary">Yes Delete Movie</button>
+                            <button id="delete-movie-submit" type="submit" class="btn btn-primary">Confirm</button>
                             <button id="delete-movie-cancel" type="submit" class="btn btn-danger">Cancel</button>
                         </div>   
                     </div>
@@ -378,7 +355,7 @@ $('body').on('click', '#edit-movie-submit', function(e) {
 
 
 
-//MOVIE SEARCH
+    //MOVIE SEARCH
     const movieSearch = (searchText) => {
         $('li').each(function(index, element) {
             let currentMovieTitle = element.children[0].children[1].children[0].id.toLowerCase()
@@ -395,6 +372,50 @@ $('body').on('click', '#edit-movie-submit', function(e) {
         e.preventDefault();
         let movieSearchText = $('#movie-search-text').val().toLowerCase();
         movieSearch(movieSearchText);
+    })
+
+    //MOVIE SORT
+    const addSortHTML = () =>
+        `<div id="sort-div">
+            <label for="sort-list">SORT BY:</label>
+            <select id="sort-list">
+               <option></option>
+               <option>Name (A-Z)</option>
+               <option>Name (Z-A)</option>
+               <option>Rating &#9660;</option>
+               <option>Rating &#9650;</option>
+            </select>
+        </div>`;
+
+    //sort handler
+    $('body').on('change', '#sort-list', function(e) {
+            var optionSelected = $("option:selected", this);
+            var optionIndex = optionSelected[0].index;
+            var currentCardArray = $('li');
+            switch(optionIndex) {
+                case 1:
+                    currentCardArray.sort((a, b) => a.children[0].children[1].children[0].id.localeCompare(b.children[0].children[1].children[0].id));
+                    $('li').remove();
+                    $('ul#movie-card-list').append(currentCardArray);
+                    break;
+                case 2:
+                    currentCardArray.sort((a, b) => b.children[0].children[1].children[0].id.localeCompare(a.children[0].children[1].children[0].id));
+                    $('li').remove();
+                    $('ul#movie-card-list').append(currentCardArray);
+                    break;
+                case 3:
+                    currentCardArray.sort((a, b) => b.children[0].children[1].children[2].innerText.charAt(currentCardArray[0].children[0].children[1].children[2].innerText.length-1) - a.children[0].children[1].children[2].innerText.charAt(currentCardArray[0].children[0].children[1].children[2].innerText.length-1));
+                    $('li').remove();
+                    $('ul#movie-card-list').append(currentCardArray);
+                    break;
+                case 4:
+                    currentCardArray.sort((a, b) => a.children[0].children[1].children[2].innerText.charAt(currentCardArray[0].children[0].children[1].children[2].innerText.length-1) - b.children[0].children[1].children[2].innerText.charAt(currentCardArray[0].children[0].children[1].children[2].innerText.length-1));
+                    $('li').remove();
+                    $('ul#movie-card-list').append(currentCardArray);
+                    break;
+                default:
+                    break;
+            }
     })
 
 
