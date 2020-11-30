@@ -23,6 +23,7 @@ $(document).ready(function (){
                             <img src="${movie.poster}" class="card-img-top poster">
                             <div class="card-body text-center">
                                 <h2 id= "${movie.title}" class="card-title text-uppercase">${movie.title}</h2>
+                                <h5><strong>Genre:</strong> ${movie.genre}</h5>
                                 <h5 class="mb-3">User Rating: ${movie.rating}</h5>
                                 <button id="edit-movie-btn">Edit</button>
                                 <button id="delete-movie-btn">Delete</button>
@@ -143,6 +144,10 @@ const editMovieForm = movie => {
             <input type="text" class="form-control" id="edit-movie-title" value="${movie.name}">
         </div>
         <div class="form-group">
+            <label for="edit-movie-genre">Movie Genre</label>
+            <input type="text" class="form-control" id="edit-movie-genre" value="${movie.genre}">
+        </div>
+        <div class="form-group">
             <label for="edit-movie-rating">Movie Rating</label>
             <select class="form-control form-control-sm" id="edit-movie-rating" value="${movie.rating}">
                 <option class="rating" id="rating-1" value="1">1 (This movie was terrible!) </option>
@@ -162,6 +167,7 @@ const editMovieForm = movie => {
 
 //EDIT MOVIE button handler
 $('body').on('click', '#edit-movie-btn', function (e){
+    //check if another edit form is currently open, close if it is before continuing
     if ($('div.movie-div').length) {
         $('div.movie-div').each( function(index, element) {
             console.log(element)
@@ -176,6 +182,7 @@ $('body').on('click', '#edit-movie-btn', function (e){
                     )
                     updatedMovie = updatedMovie[0];
                     updatedMovie.title = $('#edit-movie-title').val();
+                    updatedMovie.genre = $('#edit-movie-genre').val();
                     updatedMovie.rating = $('#edit-movie-rating').val();
                     updatedMovieID = updatedMovie.id
                 }).then( response => fetch(`https://even-ripple-allium.glitch.me/movies/${updatedMovieID}`))
@@ -185,11 +192,12 @@ $('body').on('click', '#edit-movie-btn', function (e){
                 })
         })
     }
-
+    //
     $(this).attr("disabled", "disabled");
     const oldMovieObj = {
         name: $(this).parent().children().html(),
-        rating: $(this).parent().children().next().html()
+        genre: $(this).parent().children().next().html().slice(24),
+        rating: $(this).parent().children().next().next().html()
     }
     const getMovieRating = Number(oldMovieObj.rating.charAt(oldMovieObj.rating.length-1));
     const newMovieObj = {};
@@ -225,6 +233,7 @@ $('body').on('click', '#edit-movie-btn', function (e){
                 )
                 updatedMovie = updatedMovie[0];
                 updatedMovie.title = $('#edit-movie-title').val();
+                updatedMovie.genre = $('#edit-movie-genre').val();
                 updatedMovie.rating = $('#edit-movie-rating').val();
                 updatedMovieID = updatedMovie.id;
                 const url = `https://even-ripple-allium.glitch.me/movies/${updatedMovieID}`;
@@ -256,6 +265,7 @@ $('body').on('click', '#edit-movie-submit', function(e) {
 //CANCEL EDIT MOVIE submit handler
     $('body').on('click', '#edit-movie-cancel', function(e) {
         e.preventDefault();
+        $(this).prev().attr('disabled', 'disabled');
         $(this).attr('disabled', 'disabled');
         let movieNameMatcher = e.target.parentElement.parentElement.parentElement.children[1].children[0].id;
         let movieCard = e.target.parentElement.parentElement.parentElement.parentElement;
@@ -268,6 +278,7 @@ $('body').on('click', '#edit-movie-submit', function(e) {
                 )
                 updatedMovie = updatedMovie[0];
                 updatedMovie.title = $('#edit-movie-title').val();
+                updatedMovie.genre = $('#edit-movie-genre').val();
                 updatedMovie.rating = $('#edit-movie-rating').val();
                 updatedMovieID = updatedMovie.id
             }).then( response => fetch(`https://even-ripple-allium.glitch.me/movies/${updatedMovieID}`))
