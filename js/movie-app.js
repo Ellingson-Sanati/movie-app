@@ -58,33 +58,31 @@ $(document).ready(function (){
 
     const addMovieForm = movie => {
         let html = `<button id="add-movie-btn" type="submit" class="btn btn-primary mb-3">Add Movie</button>
-
-<div id="add-movie-div" class="mb-3" style = "display: none">
-
-        <form class="add-movie">
-            <div class="form-group">
-                <label for="create-movie-title">Movie Title</label>
-                <input type="text" class="form-control" id="create-movie-title">
-            </div>
-            <div class="form-group">
-                <label for="create-movie-genre">Movie Genre</label>
-                <input type="text" class="form-control" id="create-movie-genre">
-            </div>
-            <div class="form-group">
-                <label for="create-movie-rating">Movie Rating</label>
-    <!--            <input type="text" class="form-control" id="create-movie-rating">-->
-                <select class="form-control form-control-sm" id="create-movie-rating">
-                    <option value="1">1 (This movie was terrible!) </option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5 (I could watch this over and over!)</option>
-                </select>
-            </div>
-            <button id="add-movie-submit" type="submit" class="btn btn-primary">Add Movie</button>
-            <button id="add-movie-cancel" type="submit" class="btn btn-danger">Cancel Add Movie</button>
-        </form>
-    </div>`
+                    <div id="add-movie-div" class="mb-3" style = "display: none">
+                    <form class="add-movie">
+                        <div class="form-group">
+                            <label for="create-movie-title">Movie Title</label>
+                            <input type="text" class="form-control" id="create-movie-title">
+                        </div>
+                        <div class="form-group">
+                            <label for="create-movie-genre">Movie Genre</label>
+                            <input type="text" class="form-control" id="create-movie-genre">
+                        </div>
+                        <div class="form-group">
+                            <label for="create-movie-rating">Movie Rating</label>
+                            <!--<input type="text" class="form-control" id="create-movie-rating">-->
+                            <select class="form-control form-control-sm" id="create-movie-rating">
+                                <option value="1">1 (This movie was terrible!) </option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5 (I could watch this over and over!)</option>
+                            </select>
+                        </div>
+                        <button id="add-movie-submit" type="submit" class="btn btn-primary">Add Movie</button>
+                        <button id="add-movie-cancel" type="submit" class="btn btn-danger">Cancel Add Movie</button>
+                        </form>
+                    </div>`
         return html
     }
 
@@ -96,9 +94,10 @@ $('body').on('click', '#add-movie-btn', function (e){
 
 })
 
-
     $('body').on('click', '#add-movie-submit', function(e) {
         e.preventDefault();
+        $('#add-movie-submit').attr('disabled', 'disabled');
+        $('#add-movie-cancel').attr('disabled', 'disabled');
         createNewMovieObj();
     })
 
@@ -110,31 +109,38 @@ $('body').on('click', '#add-movie-btn', function (e){
     })
 
     const createNewMovieObj = () => {
-        const newMovieObj = {
-            title: $('#create-movie-title').val(),
-            genre: $('#create-movie-genre').val(),
-            rating: $('#create-movie-rating').val()
-        };
-        const url = 'https://even-ripple-allium.glitch.me/movies';
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newMovieObj),
-        };
-        fetch(url, options)
+        fetch('https://even-ripple-allium.glitch.me/movies')
+            .then(response => response.json())
             .then(response => {
-                //ADD FUNCTION TO CREATE HTML/VALIDATION MESSAGE STATING MOVIE WAS ADDED
-                fetch('https://even-ripple-allium.glitch.me/movies')
-                    .then(response => response.json())
-                    .then(response => {
-                        $("h1").html(movieListHtml(response))
-                    });
-                console.log(response.json())
-    }) /* movie was added successfully */
-            .catch(error => console.error(error)); /* handle errors */
-    }
+            const newMovieObj = {
+                title: $('#create-movie-title').val(),
+                genre: $('#create-movie-genre').val(),
+                rating: $('#create-movie-rating').val(),
+                id: response.length +1
+            };
+            console.log()
+            const url = 'https://even-ripple-allium.glitch.me/movies';
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newMovieObj),
+            };
+            fetch(url, options)
+                .then(response => {
+                    //ADD FUNCTION TO CREATE HTML/VALIDATION MESSAGE STATING MOVIE WAS ADDED
+                    fetch('https://even-ripple-allium.glitch.me/movies')
+                        .then(response => response.json())
+                        .then(response => {
+                            $("h1").html(movieListHtml(response))
+                        });
+                    console.log(response.json())
+                }) /* movie was added successfully */
+                .catch(error => console.error(error)); /* handle errors */
+            })
+        }
+
 
 
 
