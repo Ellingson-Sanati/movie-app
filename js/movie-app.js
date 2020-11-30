@@ -56,7 +56,7 @@ $(document).ready(function (){
     //Instead- make a post request to/movies in the request.body - include title, rating
 
     const addMovieForm = movie => {
-        let html = `<button id="add-movie-btn" type="submit" class="btn btn-primary">Add Movie</button>
+        let html = `<button id="add-movie-btn" type="submit" class="btn btn-primary mb-3">Add Movie</button>
 
 <div id="add-movie-div"  style = "display: none">
 
@@ -316,7 +316,24 @@ $('body').on('click', '#edit-movie-submit', function(e) {
             })
     })
 
+//MOVIE SEARCH
+    const movieSearch = (searchText) => {
+        $('li').each(function(index, element) {
+            let currentMovieTitle = element.children[0].children[1].children[0].id.toLowerCase()
+            if (currentMovieTitle.indexOf(searchText) === 0) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        })
+    }
 
+
+    $('#movie-search-submit').on('click', function(e) {
+        e.preventDefault();
+        let movieSearchText = $('#movie-search-text').val().toLowerCase();
+        movieSearch(movieSearchText);
+    })
 
 
 });
