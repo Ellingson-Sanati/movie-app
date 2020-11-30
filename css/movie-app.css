@@ -35,6 +35,16 @@ body{
     padding: 1em !important;
 }
 
+#delete-movie-btn {
+    background-color: indianred;
+}
+
+#sort-div {
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
@@ -78,10 +88,10 @@ body{
     padding: 2px 16px;
     background-color: red;
     color: white;
-
+    display: block !important
 }
 .modal-header h2{
-    text-align: left;
+    text-align: center;
 }
 /* Modal Body */
 .modal-body {padding: 2px 16px;}
