@@ -36,7 +36,8 @@ $(document).ready(function (){
 
 
     const movieListHtml = (movieList) => {
-        let html = "<ul class='row list-unstyled'>";
+        let html = addMovieForm()
+        html += "<ul class='row list-unstyled'>";
         (typeof movieList == 'object') ?
         movieList.forEach(movie => {html += movieHtml(movie)})
             :
@@ -54,9 +55,41 @@ $(document).ready(function (){
 
     //Instead- make a post request to/movies in the request.body - include title, rating
 
+    const addMovieForm = movie => {
+        let html = `<button id="add-movie-btn" type="submit" class="btn btn-primary">Add Movie</button>
+
+<div id="add-movie-div"  style = "display: none">
+
+        <form class="add-movie">
+            <div class="form-group">
+                <label for="create-movie-title">Movie Title</label>
+                <input type="text" class="form-control" id="create-movie-title">
+            </div>
+            <div class="form-group">
+                <label for="create-movie-rating">Movie Rating</label>
+    <!--            <input type="text" class="form-control" id="create-movie-rating">-->
+                <select class="form-control form-control-sm" id="create-movie-rating">
+                    <option value="1">1 (This movie was terrible!) </option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5 (I could watch this over and over!)</option>
+                </select>
+            </div>
+            <button id="add-movie-submit" type="submit" class="btn btn-primary">Add Movie</button>
+            <button id="add-movie-cancel" type="submit" class="btn btn-danger">Cancel Add Movie</button>
+        </form>
+    </div>`
+        return html
+    }
 
 
+$('body').on('click', '#add-movie-btn', function (e){
+    e.preventDefault();
+    $('#add-movie-btn').hide()
+    $('#add-movie-div').show()
 
+})
 
 
     $('body').on('click', '#add-movie-submit', function(e) {
