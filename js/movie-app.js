@@ -103,7 +103,7 @@ $(document).ready(function (){
 
 
 const editMovieForm = movie => {
-        let html = `<div>
+        let html = `<div class="movie-div">
     <form id="${movie.name}" class="edit-movie">
         <div class="form-group">
             <label for="edit-movie-title">Movie Title</label>
@@ -129,7 +129,30 @@ const editMovieForm = movie => {
 
 //EDIT MOVIE button handler
 $('body').on('click', '#edit-movie-btn', function (e){
-    let button = $(this).parent();
+    if ($('div.movie-div').length) {
+        $('div.movie-div').each( function(index, element) {
+            console.log(element)
+            let movieNameMatcher = element.children[0].children[0].children[1].value
+            let movieCard = element.parentElement
+            var updatedMovieID;
+            fetch('https://even-ripple-allium.glitch.me/movies')
+                .then(response => response.json())
+                .then(response => {
+                    let updatedMovie = response.filter(movie =>
+                        movie.title == movieNameMatcher
+                    )
+                    updatedMovie = updatedMovie[0];
+                    updatedMovie.title = $('#edit-movie-title').val();
+                    updatedMovie.rating = $('#edit-movie-rating').val();
+                    updatedMovieID = updatedMovie.id
+                }).then( response => fetch(`https://even-ripple-allium.glitch.me/movies/${updatedMovieID}`))
+                .then(response => response.json())
+                .then(response => {
+                    $(movieCard).replaceWith(movieHtml(response));
+                })
+        })
+    }
+
     $(this).attr("disabled", "disabled");
     const oldMovieObj = {
         name: $(this).parent().children().html(),
@@ -144,9 +167,9 @@ $('body').on('click', '#edit-movie-btn', function (e){
         .then(function(response) {
             console.log(response);
             $('.rating').each( function(index, element) {
-                console.log(element)
-                console.log(index);
-                if ((movies[0].title == oldMovieObj.name) && getMovieRating == $(element).attr('value')) {
+                // console.log(element)
+                // console.log(index);
+                if (getMovieRating == $(element).attr('value')) {
                     console.log("success");
                     $(element).attr("selected", "selected");
                 }
@@ -220,6 +243,7 @@ $('body').on('click', '#edit-movie-submit', function(e) {
                 $(movieCard).replaceWith(movieHtml(response));
             })
     });
+
 
 //****Section 4
 
