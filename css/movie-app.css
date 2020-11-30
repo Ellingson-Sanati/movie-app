@@ -15,8 +15,12 @@ body{
 
 }
 
+.jumbotron{
+    background-image: url("../img/popcorn.jpg");
+    min-height: 300px;
+}
 .navbar{
-    height: 100px;
+    height: 50px;
     width: auto;
     /*padding: 1em;*/
     font-size: large;
@@ -35,6 +39,9 @@ body{
     padding: 1em !important;
 }
 
+.form-inline{
+    ;
+}
 #delete-movie-btn {
     background-color: indianred;
 }
