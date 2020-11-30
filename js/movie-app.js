@@ -59,12 +59,16 @@ $(document).ready(function (){
     const addMovieForm = movie => {
         let html = `<button id="add-movie-btn" type="submit" class="btn btn-primary mb-3">Add Movie</button>
 
-<div id="add-movie-div"  style = "display: none">
+<div id="add-movie-div" class="mb-3" style = "display: none">
 
         <form class="add-movie">
             <div class="form-group">
                 <label for="create-movie-title">Movie Title</label>
                 <input type="text" class="form-control" id="create-movie-title">
+            </div>
+            <div class="form-group">
+                <label for="create-movie-genre">Movie Genre</label>
+                <input type="text" class="form-control" id="create-movie-genre">
             </div>
             <div class="form-group">
                 <label for="create-movie-rating">Movie Rating</label>
@@ -98,9 +102,17 @@ $('body').on('click', '#add-movie-btn', function (e){
         createNewMovieObj();
     })
 
+    $('body').on('click', '#add-movie-cancel', function (e){
+        e.preventDefault();
+        $('#add-movie-btn').show()
+        $('#add-movie-div').hide()
+
+    })
+
     const createNewMovieObj = () => {
         const newMovieObj = {
             title: $('#create-movie-title').val(),
+            genre: $('#create-movie-genre').val(),
             rating: $('#create-movie-rating').val()
         };
         const url = 'https://even-ripple-allium.glitch.me/movies';
@@ -294,9 +306,45 @@ $('body').on('click', '#edit-movie-submit', function(e) {
 //Next to Edit movie button - have a Delete movie button
 
 //Delete request send to /movies to delete that specific movie
-
-
     $('body').on('click', '#delete-movie-btn', function (e){
+        e.preventDefault()
+
+        $('#myModal').show()
+    })
+
+    $(window).on('click', function (e){
+
+        if(e.target == $('#myModal')[0]){
+            $('#myModal').hide()
+        }
+    })
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+// When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+// When the user clicks anywhere outside of the modal, close it
+//     window.onclick = function(event) {
+//         if (event.target == modal) {
+//             modal.style.display = "none";
+//         }
+//     }
+
+    $('body').on('click', '#delete-movie-submit', function (e){
         let movieNameMatcher = e.target.parentElement.parentElement.children[1].children[0].id;
         let deleteMovie;
         let deleteMovieID = '';
@@ -325,6 +373,12 @@ $('body').on('click', '#edit-movie-submit', function(e) {
                         /* movie was added successfully */
                     }).catch(error => console.error(error)); /* handle errors */
             })
+    })
+
+    $('body').on('click', '#delete-movie-cancel', function (e){
+        e.preventDefault()
+
+        $('#myModal').hide();
     })
 
 //MOVIE SEARCH
