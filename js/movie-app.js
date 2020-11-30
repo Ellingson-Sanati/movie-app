@@ -13,7 +13,6 @@ $(document).ready(function (){
     fetch('https://even-ripple-allium.glitch.me/movies')
         .then(response => response.json())
         .then(response => {
-            console.log(response)
             let movieList = movieListHtml(response)
             $("h1").html(movieListHtml(response))
         });
@@ -84,7 +83,6 @@ $(document).ready(function (){
                 fetch('https://even-ripple-allium.glitch.me/movies')
                     .then(response => response.json())
                     .then(response => {
-                        console.log(response)
                         $("h1").html(movieListHtml(response))
                     });
                 console.log(response.json())
@@ -131,6 +129,7 @@ const editMovieForm = movie => {
 
 //EDIT MOVIE button handler
 $('body').on('click', '#edit-movie-btn', function (e){
+    let button = $(this).parent();
     $(this).attr("disabled", "disabled");
     const oldMovieObj = {
         name: $(this).parent().children().html(),
@@ -143,8 +142,12 @@ $('body').on('click', '#edit-movie-btn', function (e){
             response.json()
         )
         .then(function(response) {
-            $('option').each( function(index, element) {
-                if (getMovieRating == $(element).attr('value')) {
+            console.log(response);
+            $('.rating').each( function(index, element) {
+                console.log(element)
+                console.log(index);
+                if ((movies[0].title == oldMovieObj.name) && getMovieRating == $(element).attr('value')) {
+                    console.log("success");
                     $(element).attr("selected", "selected");
                 }
             })
@@ -154,7 +157,6 @@ $('body').on('click', '#edit-movie-btn', function (e){
 })
 
     const editMovieObj = function(e) {
-        console.log(e.target);
         let movieNameMatcher = e.target.parentElement.parentElement.parentElement.children[1].children[0].id;
         let updatedMovie;
         let updatedMovieID = '';
@@ -162,12 +164,10 @@ $('body').on('click', '#edit-movie-btn', function (e){
         fetch('https://even-ripple-allium.glitch.me/movies')
             .then(response => response.json())
             .then(response => {
-                console.log(response)
                 updatedMovie = response.filter(movie =>
                     movie.title == movieNameMatcher
                 )
                 updatedMovie = updatedMovie[0];
-                console.log(updatedMovie);
                 updatedMovie.title = $('#edit-movie-title').val();
                 updatedMovie.rating = $('#edit-movie-rating').val();
                 updatedMovieID = updatedMovie.id;
@@ -199,7 +199,6 @@ $('body').on('click', '#edit-movie-submit', function(e) {
 
 //CANCEL EDIT MOVIE submit handler
     $('body').on('click', '#edit-movie-cancel', function(e) {
-        debugger
         e.preventDefault();
         $(this).attr('disabled', 'disabled');
         let movieNameMatcher = e.target.parentElement.parentElement.parentElement.children[1].children[0].id;
@@ -208,19 +207,16 @@ $('body').on('click', '#edit-movie-submit', function(e) {
         fetch('https://even-ripple-allium.glitch.me/movies')
             .then(response => response.json())
             .then(response => {
-                console.log(response)
-                updatedMovie = response.filter(movie =>
+                let updatedMovie = response.filter(movie =>
                     movie.title == movieNameMatcher
                 )
                 updatedMovie = updatedMovie[0];
-                console.log(updatedMovie);
                 updatedMovie.title = $('#edit-movie-title').val();
                 updatedMovie.rating = $('#edit-movie-rating').val();
                 updatedMovieID = updatedMovie.id
             }).then( response => fetch(`https://even-ripple-allium.glitch.me/movies/${updatedMovieID}`))
             .then(response => response.json())
             .then(response => {
-                console.log(response)
                 $(movieCard).replaceWith(movieHtml(response));
             })
     });
@@ -233,8 +229,6 @@ $('body').on('click', '#edit-movie-submit', function(e) {
 
 
     $('body').on('click', '#delete-movie-btn', function (e){
-
-        console.log(e.target);
         let movieNameMatcher = e.target.parentElement.parentElement.children[1].children[0].id;
         let deleteMovie;
         let deleteMovieID = '';
@@ -242,14 +236,10 @@ $('body').on('click', '#edit-movie-submit', function(e) {
         fetch('https://even-ripple-allium.glitch.me/movies')
             .then(response => response.json())
             .then(response => {
-
-                console.log(response)
-
                 deleteMovie = response.filter(movie =>
                     movie.title == movieNameMatcher
                 )
                 deleteMovie = deleteMovie[0];
-                console.log(deleteMovie);
                 deleteMovieID = deleteMovie.id;
                 const url = `https://even-ripple-allium.glitch.me/movies/${deleteMovieID}`;
                 const options = {
@@ -261,8 +251,8 @@ $('body').on('click', '#edit-movie-submit', function(e) {
                 };
                 fetch(url, options)
                     .then(response => {
+                        console.log(response);
                         //ADD FUNCTION TO CREATE HTML/VALIDATION MESSAGE STATING MOVIE WAS ADDED
-                        console.log(response.json())
                         $(movieCard).remove()
                         /* movie was added successfully */
                     }).catch(error => console.error(error)); /* handle errors */
