@@ -376,7 +376,7 @@ $('body').on('click', '#edit-movie-submit', function(e) {
 
     //MOVIE SORT
     const addSortHTML = () =>
-        `<div id="sort-div">
+        `<span id="sort-div" style="text-align: right">
             <label for="sort-list">SORT BY:</label>
             <select id="sort-list">
                <option></option>
@@ -385,7 +385,7 @@ $('body').on('click', '#edit-movie-submit', function(e) {
                <option>Rating &#9660;</option>
                <option>Rating &#9650;</option>
             </select>
-        </div>`;
+        </span>`;
 
     //sort handler
     $('body').on('change', '#sort-list', function(e) {
